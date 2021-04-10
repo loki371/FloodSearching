@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from db.mysql import *
+from routers import contact
 
 app = FastAPI()
+
+app.include_router(contact.router_contacts)
 
 @app.on_event("startup")
 async def startup():
