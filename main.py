@@ -1,7 +1,15 @@
 from fastapi import FastAPI
+from db.database import *
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+@app.on_event("startup")
+async def startup():
+    if conn.is_closed():
+        conn.connect()
+        
+@app.on_event("shutdown")
+async def shutdown():
+    print("Closing...")
+    if not conn.is_closed():
+        conn.close()
