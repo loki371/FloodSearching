@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from db.database import *
+from db.mysql import *
 
 app = FastAPI()
 
