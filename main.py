@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 from db.mysql import *
-from routers import contact, image
+from routers import image
 
 app = FastAPI()
 
-app.include_router(contact.router_contacts)
 app.include_router(image.router_images)
 
 @app.on_event("startup")

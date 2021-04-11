@@ -3,7 +3,6 @@ from peewee import *
 
 from .base_model import BaseModel
 
-
 class Contact(BaseModel):
     id = PrimaryKeyField(null=False)
     first_name = CharField(max_length=30)
