@@ -1,5 +1,5 @@
 from typing import Optional
-
+from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, Header, File, UploadFile
 
 router_images = APIRouter(
@@ -8,7 +8,7 @@ router_images = APIRouter(
 )
 
 @router_images.post("/{registrationId}", summary="Save image of registration to Server", description="Return true if we can save it, else false" )
-async def get_contacts(
+async def saveImage(
         registrationId: int, 
         Authorization: Optional[str] = Header(None),
         image: UploadFile = File(...)
@@ -20,3 +20,13 @@ async def get_contacts(
     with open(image_location, "wb+") as file_object:
         file_object.write(image.file.read())
     return [{'status': 'OK'}]
+
+@router_images.get("/{registrationId}", summary="Save image of registration to Server", description="Return true if we can save it, else false" )
+async def getImage(
+        registrationId: int, 
+        Authorization: Optional[str] = Header(None)
+    ):
+    image_name = str(registrationId) + ".jpeg"
+    image_location = f"images/{image_name}"
+    image_like = open(image_location, mode="rb")
+    return StreamingResponse(image_like, media_type="image/jpeg")
