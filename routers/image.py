@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, Header, File, UploadFile
 
 from services import jwt
+from models import registration_image, registration
 
 router_images = APIRouter(
     prefix="/pythonService/registrations/images",
@@ -15,7 +16,17 @@ async def saveImage(
         Authorization: Optional[str] = Header(None),
         image: UploadFile = File(...)
     ):
-    # jwt.extract_token(Authorization)
+    jwt.extract_token(Authorization)
+
+    registration_record = registration.get_regis(registrationId)
+    if (registration_record is None):
+        return [{'status': 'not found'}]
+
+    print("regis_record ",registration_record)
+
+    regis_img_record = registration_image.get_regis_img(registrationId)
+
+    print("regis_img_record ",regis_img_record)
 
     file_tail = image.filename.split('.')[-1]
     image_name = str(registrationId) + "." + file_tail

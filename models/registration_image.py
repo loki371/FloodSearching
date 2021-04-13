@@ -1,13 +1,10 @@
-
 from peewee import *
 
-from .base_model import BaseModel
+from db.mysql import BaseModel
 
 class RegistrationImage(BaseModel):
-    id = PrimaryKeyField(null=False)
-    registration_id = int
-    image_name = CharField()
-    # features = Byte
+    registration_id: int
+    image_name: str
 
     class Meta:
         db_table = 'registration_image'
@@ -26,5 +23,5 @@ def get_regis_img(regis_id: int):
     return RegistrationImage.filter(RegistrationImage.registration_id == regis_id).first()
 
 
-def delete_contact(regis_id: int):
+def delete_regis_img(regis_id: int):
     return RegistrationImage.delete().where(RegistrationImage.registration_id == regis_id).execute()

@@ -16,19 +16,14 @@ def extract_token(token: str = Depends(oauth2_scheme)):
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials"
     )
-    # try:
-    print(token)
-    print(SECRET_KEY) 
-    print(ALGORITHM)
-    options = {'verify_aud': False}
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    print(payload)
-        # if username is None:
-        #     raise credentials_exception
-        # token_data = TokenData(username=username)
-    # except JWTError:
-    #     raise credentials_exception
-    # user = get_user(fake_users_db, username=token_data.username)
-    # if user is None:
-    #     raise credentials_exception
-    return null
+    try:
+        payload = jwt.decode(token, SECRET_KEY)
+        username = payload.get('sub')
+        exp = payload.get('exp')
+        if username is None:
+            raise credentials_exception
+
+    except JWTError:
+        raise credentials_exception
+
+    return username
