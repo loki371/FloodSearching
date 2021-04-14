@@ -16,6 +16,7 @@ def extract_token(token: str = Depends(oauth2_scheme)):
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials"
     )
+    username = None
     try:
         payload = jwt.decode(token, SECRET_KEY)
         username = payload.get('sub')

@@ -3,25 +3,32 @@ from peewee import *
 from db.mysql import BaseModel
 
 class RegistrationImage(BaseModel):
-    registration_id: int
-    image_name: str
+    id = IntegerField
+    image_name = CharField(255)
 
     class Meta:
         db_table = 'registration_image'
 
+# RegistrationImage.create_table()
 
-async def create_registration_image(registration_id: int, image_name: str):
-    regis_img_object = RegistrationImage(
-        registration_id = registration_id,
+def create_registration_image(registration_id: int, image_name: str):
+    regis_img_object = RegistrationImage.create(
         image_name = image_name,
+        id = registration_id  
     )
-    regis_img_object.save()
+    print(f'creating: id = {regis_img_object.id} imageName = {regis_img_object.image_name}')
     return regis_img_object
 
 
 def get_regis_img(regis_id: int):
-    return RegistrationImage.filter(RegistrationImage.registration_id == regis_id).first()
+    try:
+        return RegistrationImage.select().where(RegistrationImage.id == regis_id).get()
+    except RegistrationImage.DoesNotExist:
+        return None
 
 
 def delete_regis_img(regis_id: int):
-    return RegistrationImage.delete().where(RegistrationImage.registration_id == regis_id).execute()
+    try:
+        return RegistrationImage.delete().where(RegistrationImage.id == regis_id).execute()
+    except RegistrationImage.DoesNotExist:
+        return None

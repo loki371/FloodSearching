@@ -5,6 +5,8 @@ from fastapi import APIRouter, Header, File, UploadFile
 from services import jwt
 from models import registration_image, registration
 
+from jose import JWTError
+
 router_images = APIRouter(
     prefix="/pythonService/registrations/images",
     tags=["images"]
@@ -16,25 +18,35 @@ async def saveImage(
         Authorization: Optional[str] = Header(None),
         image: UploadFile = File(...)
     ):
-    jwt.extract_token(Authorization)
+
+    print("Registration Id = ", registrationId)
+    print("token = ", Authorization)
+
+    username = None
+    try:
+        username = jwt.extract_token(Authorization)
+    except JWTError:
+        return [{'status': 'token is not valid'}]
 
     registration_record = registration.get_regis(registrationId)
     if (registration_record is None):
         return [{'status': 'not found'}]
 
-    print("regis_record ",registration_record)
+    print(f'username = {username} & createdBy = {registration_record.create_by_username}')
+    if (registration_record.create_by_username != username):
+        return [{'status': 'this registration not belong to you'}]
 
-    regis_img_record = registration_image.get_regis_img(registrationId)
-
-    print("regis_img_record ",regis_img_record)
+    registration_image.delete_regis_img(registrationId)
 
     file_tail = image.filename.split('.')[-1]
     image_name = str(registrationId) + "." + file_tail
     image_location = f"images/{image_name}"
     
-    print("registrationId = ", registrationId, " imageName = ", image_name, " authorization = ", Authorization)
     with open(image_location, "wb+") as file_object:
         file_object.write(image.file.read())
+
+    registration_image.create_registration_image(registrationId, image_name)
+
     return [{'status': 'OK'}]
 
 @router_images.get("/{registrationId}", summary="Save image of registration to Server", description="Return true if we can save it, else false" )
@@ -42,9 +54,19 @@ async def getImage(
         registrationId: int, 
         Authorization: Optional[str] = Header(None)
     ):
-    # jwt.extract_token(Authorization)
+    try:
+        jwt.extract_token(Authorization)
+    except JWTError:
+        return [{'status': 'token is not valid'}]
 
-    image_name = str(registrationId) + ".jpeg"
+    regis_img_record = registration_image.get_regis_img(registrationId)
+
+    image_name = str(regis_img_record.image_name)
     image_location = f"images/{image_name}"
     image_like = open(image_location, mode="rb")
+
+    if (regis_img_record is not None):
+        print("imageName =  ", regis_img_record.image_name)
+        registration_image.delete_regis_img(registrationId)
+
     return StreamingResponse(image_like, media_type="image/jpeg")

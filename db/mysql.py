@@ -1,3 +1,5 @@
+#https://docs.peewee-orm.com/en/latest/peewee/quickstart.html#model-definition
+
 from peewee import *
 user = 'root'
 password = 'Aa123456'
