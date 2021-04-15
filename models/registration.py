@@ -2,6 +2,7 @@ from peewee import *
 from typing import Optional
 
 from db.mysql import BaseModel
+from registration_image import delete_regis_img
 
 class Registration(BaseModel):
     name = CharField(45)
@@ -26,6 +27,7 @@ def get_regis(regis_id: int):
 
 def delete_regis(regis_id: int):
     try:
+        delete_regis_img(regis_id)
         return Registration.delete().where(Registration.id == regis_id).execute()
     except RegistrationImage.DoesNotExist:
         return None
