@@ -8,8 +8,8 @@ from models import registration_image, registration
 from jose import JWTError
 
 router_images = APIRouter(
-    prefix="/pythonService/registrations/images",
-    tags=["images"]
+    prefix="/pythonService/registrations/search",
+    tags=["searching"]
 )
 
 @router_images.post("/{registrationId}", summary="Save image of registration to Server", description="Return true if we can save it, else false" )
@@ -26,15 +26,15 @@ async def saveImage(
     try:
         username = jwt.extract_token(Authorization)
     except JWTError:
-        return [{'status': 'token is not valid'}]
+        raise HTTPException(status_code=401, detail="token is not valid")
 
     registration_record = registration.get_regis(registrationId)
     if (registration_record is None):
-        return [{'status': 'not found'}]
+        raise HTTPException(status_code=404, detail="registration is not found")
 
     print(f'username = {username} & createdBy = {registration_record.create_by_username}')
     if (registration_record.create_by_username != username):
-        return [{'status': 'this registration not belong to you'}]
+        raise HTTPException(status_code=405, detail="this registration is not belong to you")
 
     registration_image.delete_regis_img(registrationId)
 
@@ -57,7 +57,7 @@ async def getImage(
     try:
         jwt.extract_token(Authorization)
     except JWTError:
-        return [{'status': 'token is not valid'}]
+        raise HTTPException(status_code=401, detail="token is not valid")
 
     regis_img_record = registration_image.get_regis_img(registrationId)
 
@@ -69,4 +69,4 @@ async def getImage(
         print("imageName =  ", regis_img_record.image_name)
         registration_image.delete_regis_img(registrationId)
 
-    return StreamingResponse(image_like, media_type="image/jpeg")
+    return StreamingResponse(image_like, media_type="image")
