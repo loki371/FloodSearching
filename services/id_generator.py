@@ -1,5 +1,7 @@
-cur_id = 0
+CURRENT_ID = 0
 
 async def generate():
-    cur_id += 1
-    return cur_id
+    global CURRENT_ID
+    CURRENT_ID = CURRENT_ID + 1
+    print("generateID: CURRENT_ID = ", CURRENT_ID)
+    return CURRENT_ID

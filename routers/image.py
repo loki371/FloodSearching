@@ -6,9 +6,10 @@ from services import jwt
 from models import registration_image, registration
 
 from jose import JWTError
+from services import cv_image
 
 router_images = APIRouter(
-    prefix="/pythonService/registrations/search",
+    prefix="/pythonService/registrations/images",
     tags=["searching"]
 )
 
@@ -45,7 +46,9 @@ async def saveImage(
     with open(image_location, "wb+") as file_object:
         file_object.write(image.file.read())
 
-    registration_image.create_registration_image(registrationId, image_name)
+    image_encoding = cv_image.encode_image(image_location)
+    str_arr = cv_image.convert_array_to_str(image_encoding)
+    registration_image.create_registration_image(registrationId, image_name, str_arr)
 
     return [{'status': 'OK'}]
 

@@ -11,6 +11,7 @@ import pandas as pd
 from tqdm import tqdm
 import pickle
 
+from deepface import DeepFace
 from deepface.basemodels import VGGFace, OpenFace, Facenet, FbDeepFace, DeepID, DlibWrapper, ArcFace, Boosting
 from deepface.extendedmodels import Age, Gender, Race, Emotion
 from deepface.commons import functions, realtime, distance as dst
@@ -67,5 +68,25 @@ def verify(img1_encoding=None, img2_encoding=None, enforce_detection = True, det
 	return resp_obj
 
 def encode_image(img_path):
-    img1_encoding = DeepFace.represent(img_path = img1_path, model = custom_model)
+	img1_encoding = DeepFace.represent(img_path = img_path, model = custom_model)
 	return img1_encoding
+
+
+SPACE_KEY = " "
+def convert_array_to_str(arr):
+	global SPACE_KEY
+
+	str1 = str(arr[0])
+	count = 0
+	for ele in arr:
+		count += 1
+		if count == 1:
+			continue
+
+		str1 += SPACE_KEY + str(ele)
+    
+	return str1 
+
+def convert_str_to_arr(str1):
+	global SPACE_KEY
+	return list(map(int, str1.split(SPACE_KEY)))

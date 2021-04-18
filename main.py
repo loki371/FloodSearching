@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from db.mysql import *
-from routers import image
+from routers import image, search_image
 from deepface import DeepFace
 from services.cv_image import verify
 import pathlib
@@ -8,6 +8,8 @@ import pathlib
 app = FastAPI()
 
 app.include_router(image.router_images)
+app.include_router(search_image.router_searching)
+
 
 @app.on_event("startup")
 async def startup():
