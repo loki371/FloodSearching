@@ -28,10 +28,10 @@ async def searchImage(
         phone: Optional[str] = 0,
     ):
 
-    try:
-        jwt.extract_token(Authorization)
-    except JWTError:
-        raise HTTPException(status_code=401, detail="token is not valid")
+    # try:
+    #     jwt.extract_token(Authorization)
+    # except JWTError:
+    #     raise HTTPException(status_code=401, detail="token is not valid")
 
     print("searchImage: request info:\n "
         + f' - name = {name}\n'
@@ -52,13 +52,32 @@ async def searchImage(
 
     unknown_encoding = cv_image.encode_image(image_location)
 
-    registration_list = registration.find_by_ward_id(ward_id)
-    registration_id_list = []
-    for item in registration_list:
-        registration_id_list.append(item.id)
-    print("list regis id = ", registration_id_list)
-
     # delete image
     cv_image.remove_image(image_location)
 
-    return [{'status': 'ok'}]
+    registration_list = registration.find_by_ward_id(ward_id)
+
+    differ_point = {}
+    size_registration_list = len(registration_list)
+    info_regis = {}
+
+    for i in range(size_registration_list):
+        item_regis = {}
+        item_regis['name'] = registration_list[i].name
+        item_regis['ward_id'] = registration_list[i].ward_id
+        info_regis[i] = item_regis
+
+        regis_img = registration_image.get_regis_img(registration_list[i])
+        
+        if (regis_img == None):
+            differ_point[i] = 1000
+            continue
+
+        if (regis_img.str_arr == None):
+            differ_point[i] = 1000
+            continue
+
+        int_arr = cv_image.convert_str_to_arr(regis_img.str_arr)
+        differ_point[i] = cv_image.verify(unknown_encoding, int_arr)['distance']
+
+    return [{'differ_point': differ_point, 'registrations' : info_regis}]
