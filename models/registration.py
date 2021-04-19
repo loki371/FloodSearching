@@ -8,7 +8,7 @@ class Registration(BaseModel):
     longitude = FloatField 
     latitude = FloatField
     num_person = IntegerField
-    ward_id = IntegerField
+    ward_id = CharField(6)
     e_state = IntegerField
     saved_by_username = CharField(20)
     create_by_username = CharField(20)
@@ -21,6 +21,13 @@ def get_regis(regis_id: int):
     try:
         return Registration.select().where(Registration.id == regis_id).get()
     except RegistrationImage.DoesNotExist:
+        return None
+
+
+def find_by_ward_id(ward_id: int):
+    try:
+        return Registration.select().where(Registration.ward_id == ward_id).limit(100)
+    except Registration.DoesNotExist:
         return None
 
 

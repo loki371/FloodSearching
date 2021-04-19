@@ -90,3 +90,6 @@ def convert_array_to_str(arr):
 def convert_str_to_arr(str1):
 	global SPACE_KEY
 	return list(map(int, str1.split(SPACE_KEY)))
+
+async def remove_image(path):
+	os.remove(image_location)

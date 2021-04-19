@@ -24,7 +24,7 @@ async def searchImage(
         longitude: Optional[float] = 0,
         latitude: Optional[float] = 0,
         num_person: Optional[int] = 0,
-        ward_id: Optional[int] = 0,
+        ward_id: Optional[str] = 0,
         phone: Optional[str] = 0,
     ):
 
@@ -44,7 +44,6 @@ async def searchImage(
     # save image to server
     id_image = await id_generator.generate()
 
-
     file_tail = image.filename.split('.')[-1]
     image_name = str(id_image) + '.' + file_tail
     image_location = f"temp_img/{image_name}"
@@ -53,7 +52,13 @@ async def searchImage(
 
     unknown_encoding = cv_image.encode_image(image_location)
 
-    # delete image
-    os.remove(image_location)
+    registration_list = registration.find_by_ward_id(ward_id)
+    registration_id_list = []
+    for item in registration_list:
+        registration_id_list.append(item.id)
+    print("list regis id = ", registration_id_list)
 
-    return [{'status': 'token is not valid'}]
+    # delete image
+    cv_image.remove_image(image_location)
+
+    return [{'status': 'ok'}]

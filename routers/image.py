@@ -46,6 +46,7 @@ async def saveImage(
     with open(image_location, "wb+") as file_object:
         file_object.write(image.file.read())
 
+    print("everything in here is so ok")
     image_encoding = cv_image.encode_image(image_location)
     str_arr = cv_image.convert_array_to_str(image_encoding)
     registration_image.create_registration_image(registrationId, image_name, str_arr)
