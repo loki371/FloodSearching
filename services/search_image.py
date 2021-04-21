@@ -91,7 +91,7 @@ def convert_str_to_arr(str1):
 	global SPACE_KEY
 	return list(map(float, str1.split(SPACE_KEY)))
 
-async def remove_image(path):
+def remove_image(image_location):
 	os.remove(image_location)
 
 # -------------------------------------
@@ -103,14 +103,13 @@ def get_distance(regis_img, unknown_encoding):
 	if (regis_img == None):
 		return MAX_POINT_IMG
 		
-	if (regis_img.str_arr == None):
+	if (regis_img['features'] == None):
 		return MAX_POINT_IMG
 	
 	if (unknown_encoding == None):
 		return MAX_POINT_IMG
 
-	int_arr = convert_str_to_arr(regis_img.str_arr)
-	point = verify(unknown_encoding, int_arr)['distance']
+	point = verify(unknown_encoding, regis_img['features'])['distance']
 	
 	print('imagePoint = ', point)
 	return point

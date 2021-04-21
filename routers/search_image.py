@@ -89,7 +89,7 @@ async def searchImage(
         differ_point[i] += search_name.get_distance(registration_list[i].name, name)
 
         # calculate point by image
-        regis_img = registration_image.get_regis_img(registration_list[i])
+        regis_img = registration_image.get_regis_img(registration_list[i].id)
         differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
 
     print('\n')

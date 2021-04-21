@@ -1,36 +1,27 @@
 from peewee import *
 
-from db.mysql import BaseModel
+from db.mongo import db
 
-class RegistrationImage(BaseModel):
-    id = IntegerField
-    image_name = CharField(255)
-    str_arr = TextField()
+def create_registration_image(registration_id: int, image_name: str, float_arr):
+    regis_img_object = {
+        'regis_id': registration_id,
+        'image_name': image_name,
+        'features': float_arr
+    }
 
-    class Meta:
-        db_table = 'registration_image'
-
-# RegistrationImage.create_table()
-
-def create_registration_image(registration_id: int, image_name: str, str_arr: str):
-    regis_img_object = RegistrationImage.create(
-        image_name = image_name,
-        id = registration_id,
-        str_arr = str_arr
-    )
-    print(f'creating: id = {regis_img_object.id} imageName = {regis_img_object.image_name}')
+    id_object = db.registration_image.insert_one(regis_img_object)
+    print(f'creating: idObject = {id_object}')
     return regis_img_object
 
 
 def get_regis_img(regis_id: int):
     try:
-        return RegistrationImage.select().where(RegistrationImage.id == regis_id).get()
-    except RegistrationImage.DoesNotExist:
+        print('get_regis_img: regis_id = ', regis_id)
+        return db.registration_image.find_one({'regis_id' : regis_id})
+    except:
+        print('get_regis_img: exception')
         return None
 
 
 def delete_regis_img(regis_id: int):
-    try:
-        return RegistrationImage.delete().where(RegistrationImage.id == regis_id).execute()
-    except RegistrationImage.DoesNotExist:
-        return None
+    db.registration_image.delete_one({'regis_id' : regis_id})

@@ -37,19 +37,7 @@ async def saveImage(
     if (registration_record.create_by_username != username):
         raise HTTPException(status_code=405, detail="this registration is not belong to you")
 
-    registration_image.delete_regis_img(registrationId)
-
-    file_tail = image.filename.split('.')[-1]
-    image_name = str(registrationId) + "." + file_tail
-    image_location = f"images/{image_name}"
-    
-    with open(image_location, "wb+") as file_object:
-        file_object.write(image.file.read())
-
-    print("everything in here is so ok")
-    image_encoding = search_image.encode_image(image_location)
-    str_arr = search_image.convert_array_to_str(image_encoding)
-    registration_image.create_registration_image(registrationId, image_name, str_arr)
+    delete_regis_img_and_save_and_extract_feature_img(registrationId, image)
 
     return [{'status': 'OK'}]
 
@@ -58,6 +46,7 @@ async def getImage(
         registrationId: int, 
         Authorization: Optional[str] = Header(None)
     ):
+    
     try:
         jwt.extract_token(Authorization)
     except JWTError:
@@ -65,12 +54,35 @@ async def getImage(
 
     regis_img_record = registration_image.get_regis_img(registrationId)
 
-    image_name = str(regis_img_record.image_name)
-    image_location = f"images/{image_name}"
-    image_like = open(image_location, mode="rb")
-
     if (regis_img_record is not None):
-        print("imageName =  ", regis_img_record.image_name)
-        registration_image.delete_regis_img(registrationId)
+        
+        print("imageName =  ", regis_img_record['image_name'])
 
-    return StreamingResponse(image_like, media_type="image")
+        image_name = regis_img_record['image_name']
+        image_location = f"images/{image_name}"
+        image_like = open(image_location, mode="rb")
+        image_tail = image_name.split('.')[-1]
+
+        return StreamingResponse(image_like, media_type="image/"+image_tail)
+
+    else:
+        return [{'status' : 'img is not exist'}]
+
+
+# ------------------------------------------------------------------------------
+# Utilities function
+
+def delete_regis_img_and_save_and_extract_feature_img(registrationId, image):
+    registration_image.delete_regis_img(registrationId)
+
+    file_tail = image.filename.split('.')[-1]
+    image_name = str(registrationId) + "." + file_tail
+    image_location = f"images/{image_name}"
+    
+    with open(image_location, "wb+") as file_object:
+        file_object.write(image.file.read())
+    
+    image_encoding = search_image.encode_image(image_location)
+    registration_image.create_registration_image(registrationId, image_name, image_encoding)
+
+    print("everything in here is so ok")
