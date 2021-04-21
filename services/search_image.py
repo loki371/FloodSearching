@@ -109,7 +109,7 @@ def get_distance(regis_img, unknown_encoding):
 	if (unknown_encoding == None):
 		return MAX_POINT_IMG
 
-	point = verify(unknown_encoding, regis_img['features'])['distance']
+	point = verify(unknown_encoding, regis_img['features'])['distance'] * MAX_POINT_IMG
 	
 	print('imagePoint = ', point)
 	return point
