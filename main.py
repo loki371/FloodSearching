@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from db.mysql import *
 from routers import image, search_image
 from deepface import DeepFace
-from services.cv_image import verify
 import pathlib
 
 app = FastAPI()

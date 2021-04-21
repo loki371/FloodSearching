@@ -93,3 +93,24 @@ def convert_str_to_arr(str1):
 
 async def remove_image(path):
 	os.remove(image_location)
+
+# -------------------------------------
+MAX_POINT_IMG = 200
+
+def get_distance(regis_img, unknown_encoding):      
+	global MAX_POINT_IMG  
+
+	if (regis_img == None):
+		return MAX_POINT_IMG
+		
+	if (regis_img.str_arr == None):
+		return MAX_POINT_IMG
+	
+	if (unknown_encoding == None):
+		return MAX_POINT_IMG
+
+	int_arr = convert_str_to_arr(regis_img.str_arr)
+	point = verify(unknown_encoding, int_arr)['distance']
+	
+	print('imagePoint = ', point)
+	return point

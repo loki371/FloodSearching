@@ -5,11 +5,11 @@ from db.mysql import BaseModel
 
 class Registration(BaseModel):
     name = CharField(45)
-    longitude = FloatField 
-    latitude = FloatField
-    num_person = IntegerField
+    longitude = FloatField()
+    latitude = FloatField()
+    num_person = IntegerField()
     ward_id = CharField(6)
-    e_state = IntegerField
+    e_state = IntegerField()
     saved_by_username = CharField(20)
     create_by_username = CharField(20)
     phone = CharField(255)
