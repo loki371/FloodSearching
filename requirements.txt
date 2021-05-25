@@ -7,7 +7,6 @@ chardet==4.0.0
 click==7.1.2
 cryptography==3.4.7
 deepface==0.0.50
-dlib==19.22.99
 ecdsa==0.14.1
 face-recognition==1.3.0
 face-recognition-models==0.3.0

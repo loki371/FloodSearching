@@ -6,6 +6,16 @@ import pathlib
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(image.router_images)
 app.include_router(search_image.router_searching)
 
