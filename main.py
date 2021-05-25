@@ -3,6 +3,7 @@ from db.mysql import *
 from routers import image, search_image
 from deepface import DeepFace
 import pathlib
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
