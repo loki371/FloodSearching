@@ -3,6 +3,7 @@ from db.mysql import *
 from routers import image, search_image
 from deepface import DeepFace
 import pathlib
+import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -34,4 +35,5 @@ async def shutdown():
     if not conn.is_closed():
         conn.close()
 
-
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8082)
