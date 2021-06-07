@@ -63,7 +63,8 @@ async def getImage(
         image_like = open(image_location, mode="rb")
         image_tail = image_name.split('.')[-1]
 
-        return StreamingResponse(image_like, media_type="image/"+image_tail)
+        return []
+        # return StreamingResponse(image_like, media_type="image/"+image_tail)
 
     else:
         raise HTTPException(status_code=404, detail="Item not found")

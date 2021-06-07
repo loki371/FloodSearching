@@ -5,6 +5,7 @@ from deepface import DeepFace
 import pathlib
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -20,7 +21,7 @@ app.add_middleware(
 
 app.include_router(image.router_images)
 app.include_router(search_image.router_searching)
-
+app.mount("/images", StaticFiles(directory="/images"), name="static")
 
 @app.on_event("startup")
 async def startup():
