@@ -60,10 +60,10 @@ async def getImage(
 
         image_name = regis_img_record['image_name']
         image_location = f"images/{image_name}"
-        image_like = open(image_location, mode="rb")
-        image_tail = image_name.split('.')[-1]
+        # image_like = open(image_location, mode="rb")
+        # image_tail = image_name.split('.')[-1]
 
-        return []
+        return [{"url": image_location}]
         # return StreamingResponse(image_like, media_type="image/"+image_tail)
 
     else:
