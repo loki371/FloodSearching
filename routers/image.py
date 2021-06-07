@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi.responses import StreamingResponse
-from fastapi import APIRouter, Header, File, UploadFile
+from fastapi import APIRouter, Header, File, UploadFile, HTTPException
 
 from services import jwt
 from models import registration_image, registration
@@ -66,7 +66,7 @@ async def getImage(
         return StreamingResponse(image_like, media_type="image/"+image_tail)
 
     else:
-        return [{'status' : 'img is not exist'}]
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 # ------------------------------------------------------------------------------
