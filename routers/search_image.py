@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi.responses import StreamingResponse
 from fastapi import APIRouter, Header, File, UploadFile
+from numpy.core.fromnumeric import size
 from pydantic import BaseModel, Field
 
 from services import jwt
@@ -103,8 +104,14 @@ async def searchImage(
                 item = info_regis[i]
                 info_regis[i] = info_regis[j]
                 info_regis[j] = item
-        
+    
+
     size_return = min(2, size_registration_list)
+    return_differ_point = []
+    return_info_regis = []
+    for i in range(0, size_return):
+        return_differ_point[i] = differ_point[i]
+        return_info_regis[i] = info_regis[i]
 
     print('\n')
-    return [{'differ_point': differ_point[0:size_return], 'registrations' : info_regis[0:size_return]}]
+    return [{'differ_point': return_differ_point, 'registrations' : return_info_regis}]
