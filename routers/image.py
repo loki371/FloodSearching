@@ -67,7 +67,7 @@ async def getImage(
         raise HTTPException(status_code=404, detail="Item not found")
 
 
-@router_images.get("/{registrationIds}", summary="Get List image of registration to Server", description="Return true if we can save it, else false" )
+@router_images.get("/list/{registrationIds}", summary="Get List image of registration to Server", description="Return true if we can save it, else false" )
 async def getImages(
         registrationIds: str, 
         Authorization: Optional[str] = Header(None)
