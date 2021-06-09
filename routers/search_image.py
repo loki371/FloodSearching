@@ -94,4 +94,4 @@ async def searchImage(
         differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
 
     print('\n')
-    return [{'differ_point': differ_point, 'registrations' : registration_list}]
+    return [{'differ_point': differ_point, 'registrations' : item_regis}]
