@@ -70,10 +70,7 @@ async def searchImage(
     for i in range(size_registration_list):
         print('\n')
         # init item_regis and differ_point
-        item_regis = {}
-        item_regis['id'] = registration_list[i].id
-        item_regis['name'] = registration_list[i].name
-        item_regis['ward_id'] = registration_list[i].ward_id
+        item_regis = registration_list[i]
 
         info_regis[i] = item_regis
         differ_point[i] = 0

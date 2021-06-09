@@ -41,7 +41,7 @@ async def saveImage(
 
     return [{'status': 'OK'}]
 
-@router_images.get("/{registrationId}", summary="Save image of registration to Server", description="Return true if we can save it, else false" )
+@router_images.get("/{registrationId}", summary="Get image of registration to Server", description="Return true if we can save it, else false" )
 async def getImage(
         registrationId: int, 
         Authorization: Optional[str] = Header(None)
@@ -60,14 +60,43 @@ async def getImage(
 
         image_name = regis_img_record['image_name']
         image_location = f"images/{image_name}"
-        # image_like = open(image_location, mode="rb")
-        # image_tail = image_name.split('.')[-1]
 
         return [{"url": image_location}]
-        # return StreamingResponse(image_like, media_type="image/"+image_tail)
 
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+
+
+@router_images.get("/{registrationIds}", summary="Get List image of registration to Server", description="Return true if we can save it, else false" )
+async def getImages(
+        registrationIds: str, 
+        Authorization: Optional[str] = Header(None)
+    ):
+    
+    try:
+        jwt.extract_token(Authorization)
+    except JWTError:
+        raise HTTPException(status_code=401, detail="token is not valid")
+
+    listRegisId = registrationIds.split(".")
+    listRegisIdInt = [int(numeric_string) for numeric_string in listRegisId]
+    listResult = {}
+
+    for regisIdInt in listRegisIdInt:
+        regis_img_record = registration_image.get_regis_img(regisIdInt)
+
+        if (regis_img_record is not None):
+
+            print("imageName =  ", regis_img_record['image_name'])
+            image_name = regis_img_record['image_name']
+            image_location = f"images/{image_name}"
+            listResult[regisIdInt] = image_location
+
+        else:
+            listResult[regisIdInt] = ""
+
+    return [{"regidId-url":listResult}]
+
 
 
 # ------------------------------------------------------------------------------
