@@ -92,5 +92,19 @@ async def searchImage(
             continue
         differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
 
+    for i in range(0,size_registration_list-1):
+        for j in range(i, size_registration_list):
+            if (differ_point[i] > differ_point[j]):
+
+                temp = differ_point[i]
+                differ_point[i] = differ_point[j]
+                differ_point[j] = temp
+
+                item = info_regis[i]
+                info_regis[i] = info_regis[j]
+                info_regis[j] = item
+        
+    size_return = min(2, size_registration_list)
+
     print('\n')
-    return [{'differ_point': differ_point, 'registrations' : info_regis}]
+    return [{'differ_point': differ_point[0:size_return], 'registrations' : info_regis[0:size_return]}]
