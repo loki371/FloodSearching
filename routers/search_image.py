@@ -90,8 +90,15 @@ async def searchImage(
         regis_img = registration_image.get_regis_img(registration_list[i].id)
         if regis_img == None or regis_img['features'] == None:
             differ_point[i] += 1000
+            item_regis["url"] = ""
             continue
+
+        print("imageName =  ", regis_img['image_name'])
+        image_name = regis_img['image_name']
+        image_location = f"images/{image_name}"
+        item_regis["url"] = image_location
+        
         differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
 
     print('\n')
-    return [{'differ_point': differ_point, 'registrations' : item_regis}]
+    return [{'differ_point': differ_point, 'registrations' : info_regis}]
