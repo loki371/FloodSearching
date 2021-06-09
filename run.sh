@@ -1,1 +1,2 @@
-uvicorn main:app --reload
+sudo systemctl start mongod
+python3 main.py

@@ -87,6 +87,9 @@ async def searchImage(
 
         # calculate point by image
         regis_img = registration_image.get_regis_img(registration_list[i].id)
+        if regis_img == None or regis_img['features'] == None:
+            differ_point[i] += 1000
+            continue
         differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
 
     print('\n')
