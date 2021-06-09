@@ -41,7 +41,7 @@ async def saveImage(
 
     return [{'status': 'OK'}]
 
-@router_images.get("/{registrationId}", summary="Get image of registration to Server", description="Return true if we can save it, else false" )
+@router_images.get("/item/{registrationId}", summary="Get image of registration to Server", description="Return true if we can save it, else false" )
 async def getImage(
         registrationId: int, 
         Authorization: Optional[str] = Header(None)
