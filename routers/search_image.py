@@ -56,7 +56,8 @@ async def searchImage(
         # extra features of image
         try:
             unknown_encoding = search_image.encode_image(image_location)
-        except JWTError:
+        except:
+            print("no face in image")
             raise HTTPException(status_code=401, detail="image does not have face")
 
         # delete image
