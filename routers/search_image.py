@@ -58,7 +58,7 @@ async def searchImage(
             unknown_encoding = search_image.encode_image(image_location)
         except:
             print("no face in image")
-            raise HTTPException(status_code=400, detail="image does not have face")
+            raise HTTPException(status_code=400, message="image does not have face")
 
         # delete image
         search_image.remove_image(image_location)
@@ -165,6 +165,17 @@ async def searchImage(
 
         # calculate point by image
         differ_point[i] += search_image.getMaxPointImg()
+
+        # image
+        regis_img = registration_image.get_regis_img(registration_list[i].id)
+        if regis_img == None or regis_img['features'] == None:
+            url_list[i] = ""
+            continue
+
+        print("imageName =  ", regis_img['image_name'])
+        image_name = regis_img['image_name']
+        image_location = f"images/{image_name}"
+        url_list[i] = image_location
 
     print('\n')
     return [{'differ_point': differ_point, 'registrations' : info_regis, 'url_list': url_list}]
