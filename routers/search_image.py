@@ -58,7 +58,7 @@ async def searchImage(
             unknown_encoding = search_image.encode_image(image_location)
         except:
             print("no face in image")
-            raise HTTPException(status_code=401, detail="image does not have face")
+            raise HTTPException(status_code=400, detail="image does not have face")
 
         # delete image
         search_image.remove_image(image_location)
