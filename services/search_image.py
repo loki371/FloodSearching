@@ -95,7 +95,10 @@ def remove_image(image_location):
 	os.remove(image_location)
 
 # -------------------------------------
-MAX_POINT_IMG = 200
+MAX_POINT_IMG = 1000
+
+def getMaxPointImg():
+	return MAX_POINT_IMG
 
 def get_distance(regis_img, unknown_encoding):      
 	global MAX_POINT_IMG  

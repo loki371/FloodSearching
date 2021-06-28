@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi.responses import StreamingResponse
-from fastapi import APIRouter, Header, File, UploadFile
+from fastapi import APIRouter, Header, File, UploadFile, HTTPException
 from numpy.core.fromnumeric import size
 from pydantic import BaseModel, Field
 
@@ -16,7 +16,7 @@ router_searching = APIRouter(
     tags=["images"]
 )
 
-@router_searching.get("/{name};{longitude};{latitude};{num_person};{ward_id};{phone}", description="Return list of similar registration")
+@router_searching.post("/{name};{longitude};{latitude};{num_person};{ward_id};{phone}", description="Return list of similar registration")
 async def searchImage(
         Authorization: Optional[str] = Header(None),
         image: Optional[UploadFile] = File(...),
@@ -54,7 +54,10 @@ async def searchImage(
             file_object.write(image.file.read())
 
         # extra features of image
-        unknown_encoding = search_image.encode_image(image_location)
+        try:
+            unknown_encoding = search_image.encode_image(image_location)
+        except JWTError:
+            raise HTTPException(status_code=401, detail="image does not have face")
 
         # delete image
         search_image.remove_image(image_location)
@@ -90,7 +93,7 @@ async def searchImage(
         # calculate point by image
         regis_img = registration_image.get_regis_img(registration_list[i].id)
         if regis_img == None or regis_img['features'] == None:
-            differ_point[i] += 1000
+            differ_point[i] += search_image.getMaxPointImg()
             url_list[i] = ""
             continue
 
@@ -99,7 +102,10 @@ async def searchImage(
         image_location = f"images/{image_name}"
         url_list[i] = image_location
 
-        differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
+        if (unknown_encoding != None):
+            differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
+        else:
+            differ_point[i] += search_image.getMaxPointImg()
 
     print('\n')
     return [{'differ_point': differ_point, 'registrations' : info_regis, 'url_list': url_list}]
