@@ -77,15 +77,15 @@ async def searchImage(
     # calculate distance base GPS
     distance_point = []
     for i in range(size_registration_list):
-        info_regis[i] = registration_list[i]
+        info_regis.append(registration_list[i])
 
-        distance_point[i] = search_gps.get_distance(
+        distance_point.append(search_gps.get_distance(
             longitude, 
             latitude, 
             registration_list[i].longitude, 
-            registration_list[i].latitude)
+            registration_list[i].latitude))
 
-        differ_point[i] = distance_point[i] * 1000
+        differ_point.append(distance_point[i] * 1000)
 
     # remove distance > 500m
     for i in range(size_registration_list-1, -1, -1):
@@ -100,15 +100,15 @@ async def searchImage(
 
         regis_img = registration_image.get_regis_img(info_regis[i].id)
         if regis_img == None or regis_img['features'] == None:
-            print("this regis do not have image id = " + info_regis[i])
+            print("this regis do not have image id = ", info_regis[i])
             differ_point[i] += search_image.getMaxPointImg()
-            url_list[i] = ""
+            url_list.append("")
             continue
 
         print("imageName =  ", regis_img['image_name'])
         image_name = regis_img['image_name']
         image_location = f"images/{image_name}"
-        url_list[i] = image_location
+        url_list.append(image_location)
 
         if (unknown_encoding != None):
             differ_point[i] += search_image.get_distance(regis_img, unknown_encoding)
@@ -152,17 +152,19 @@ async def searchImage(
     differ_point = []
 
     # calculate distance base GPS
+    print("regisList = ", registration_list)
+    print("sizeRegisList = ", size_registration_list)
     distance_point = []
     for i in range(size_registration_list):
-        info_regis[i] = registration_list[i]
+        info_regis.append(registration_list[i])
 
-        distance_point[i] = search_gps.get_distance(
+        distance_point.append(search_gps.get_distance(
             longitude, 
             latitude, 
             registration_list[i].longitude, 
-            registration_list[i].latitude)
+            registration_list[i].latitude))
 
-        differ_point[i] = distance_point[i] * 1000
+        differ_point.append(distance_point[i] * 1000)
 
     # remove distance > 500m
     for i in range(size_registration_list-1, -1, -1):
@@ -179,14 +181,14 @@ async def searchImage(
 
         regis_img = registration_image.get_regis_img(info_regis[i].id)
         if regis_img == None or regis_img['features'] == None:
-            print("this regis do not have image id = " + info_regis[i].id)
-            url_list[i] = ""
+            print("this regis do not have image id = ", info_regis[i].id)
+            url_list.append("")
             continue
 
         print("imageName =  ", regis_img['image_name'])
         image_name = regis_img['image_name']
         image_location = f"images/{image_name}"
-        url_list[i] = image_location
+        url_list.append(image_location)
 
     print('\n')
     return [{'differ_point': differ_point, 'registrations' : info_regis, 'url_list': url_list}]
