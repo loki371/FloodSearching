@@ -16,6 +16,8 @@ router_searching = APIRouter(
     tags=["images"]
 )
 
+THRESHOLD_DISTANCE = 500
+
 @router_searching.post("/image/{name};{longitude};{latitude};{num_person};{ward_id};{phone}", description="Return list of similar registration")
 async def searchImage(
         Authorization: Optional[str] = Header(None),
@@ -67,33 +69,38 @@ async def searchImage(
     registration_list = registration.find_by_ward_id(ward_id)
 
     # prepare for searching
-    differ_point = {}
     size_registration_list = len(registration_list)
-    info_regis = {}
-    url_list = {}
+    info_regis = []
+    url_list = []
+    differ_point = []
 
-    # calculate point
+    # calculate distance base GPS
+    distance_point = []
     for i in range(size_registration_list):
-        print('\n')
-        # init item_regis and differ_point
-        item_regis = registration_list[i]
+        info_regis[i] = registration_list[i]
 
-        info_regis[i] = item_regis
-        differ_point[i] = 0
-
-        # calculate point by GPS
-        differ_point[i] += search_gps.get_distance(
+        distance_point[i] = search_gps.get_distance(
             longitude, 
             latitude, 
             registration_list[i].longitude, 
             registration_list[i].latitude)
 
-        # calculate point by name
-        differ_point[i] += search_name.get_distance(registration_list[i].name, name)
+        differ_point[i] = distance_point[i] * 1000
 
-        # calculate point by image
-        regis_img = registration_image.get_regis_img(registration_list[i].id)
+    # remove distance > 500m
+    for i in range(size_registration_list-1, -1, -1):
+        if (distance_point[i] > THRESHOLD_DISTANCE):
+            info_regis.pop(i)
+            differ_point.pop(i)
+
+    # calculate point base name and image
+    for i in range(len(info_regis)):
+
+        differ_point[i] += search_name.get_distance(info_regis[i].name, name)
+
+        regis_img = registration_image.get_regis_img(info_regis[i].id)
         if regis_img == None or regis_img['features'] == None:
+            print("this regis do not have image id = " + info_regis[i])
             differ_point[i] += search_image.getMaxPointImg()
             url_list[i] = ""
             continue
@@ -139,36 +146,40 @@ async def searchImage(
     registration_list = registration.find_by_ward_id(ward_id)
 
     # prepare for searching
-    differ_point = {}
     size_registration_list = len(registration_list)
-    info_regis = {}
-    url_list = {}
+    info_regis = []
+    url_list = []
+    differ_point = []
 
-    # calculate point
+    # calculate distance base GPS
+    distance_point = []
     for i in range(size_registration_list):
-        print('\n')
-        # init item_regis and differ_point
-        item_regis = registration_list[i]
+        info_regis[i] = registration_list[i]
 
-        info_regis[i] = item_regis
-        differ_point[i] = 0
-
-        # calculate point by GPS
-        differ_point[i] += search_gps.get_distance(
+        distance_point[i] = search_gps.get_distance(
             longitude, 
             latitude, 
             registration_list[i].longitude, 
             registration_list[i].latitude)
 
-        # calculate point by name
-        differ_point[i] += search_name.get_distance(registration_list[i].name, name)
+        differ_point[i] = distance_point[i] * 1000
 
-        # calculate point by image
+    # remove distance > 500m
+    for i in range(size_registration_list-1, -1, -1):
+        if (distance_point[i] > THRESHOLD_DISTANCE):
+            info_regis.pop(i)
+            differ_point.pop(i)
+
+    # calculate point base name and image
+    for i in range(len(info_regis)):
+
+        differ_point[i] += search_name.get_distance(info_regis[i].name, name)
+
         differ_point[i] += search_image.getMaxPointImg()
 
-        # image
-        regis_img = registration_image.get_regis_img(registration_list[i].id)
+        regis_img = registration_image.get_regis_img(info_regis[i].id)
         if regis_img == None or regis_img['features'] == None:
+            print("this regis do not have image id = " + info_regis[i].id)
             url_list[i] = ""
             continue
 

@@ -1,4 +1,4 @@
-MAX_POINT_NAME = 10
+MAX_POINT_NAME = 50
 
 def get_distance(name1, name2):
     # init arr
