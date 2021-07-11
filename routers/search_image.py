@@ -126,6 +126,10 @@ async def searchImage(
         info_regis_2[i] = info_regis[i]
         url_list_2[i] = url_list[i]
 
+    print("\ndifferPoint : ", differ_point_2)
+    print("\nregistrationList: ", info_regis_2)
+    print("\nurl List", url_list_2)
+
     return [{'differ_point': differ_point_2, 'registrations' : info_regis_2, 'url_list': url_list_2}]
 
 @router_searching.post("/noImage/{name};{longitude};{latitude};{num_person};{ward_id};{phone}", description="Return list of similar registration")
@@ -200,7 +204,7 @@ async def searchImage(
         image_location = f"images/{image_name}"
         url_list.append(image_location)
 
-    print('\n')
+    print('\n len(differ_list) = ', len(differ_point))
     
     differ_point_2 = {}
     info_regis_2 = {}
@@ -210,5 +214,9 @@ async def searchImage(
         differ_point_2[i] = differ_point[i]
         info_regis_2[i] = info_regis[i]
         url_list_2[i] = url_list[i]
+
+    print("\ndifferPoint : ", differ_point_2)
+    print("\nregistrationList: ", info_regis_2)
+    print("\nurl List", url_list_2)
 
     return [{'differ_point': differ_point_2, 'registrations' : info_regis_2, 'url_list': url_list_2}]

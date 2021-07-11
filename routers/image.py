@@ -93,7 +93,7 @@ async def getImages(
             listResult[regisIdInt] = image_location
 
         else:
-            listResult[regisIdInt] = ""
+            listResult[regisIdInt] = "images/noAvatar.png"
 
     return [{"regidId-url":listResult}]
 
