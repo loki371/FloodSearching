@@ -102,7 +102,7 @@ async def searchImage(
         if regis_img == None or regis_img['features'] == None:
             print("this regis do not have image id = ", info_regis[i])
             differ_point[i] += search_image.getMaxPointImg()
-            url_list.append("")
+            url_list.append("images/noAvatar.png")
             continue
 
         print("imageName =  ", regis_img['image_name'])
@@ -196,7 +196,7 @@ async def searchImage(
         regis_img = registration_image.get_regis_img(info_regis[i].id)
         if regis_img == None or regis_img['features'] == None:
             print("this regis do not have image id = ", info_regis[i].id)
-            url_list.append("")
+            url_list.append("images/noAvatar.png")
             continue
 
         print("imageName =  ", regis_img['image_name'])
